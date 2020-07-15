@@ -2,7 +2,10 @@ from pynput.keyboard import Key, Listener
 import time
 import csv
 
-keys = []
+REPEAT_NUMBER = 5
+esc_count = 0
+keys = [[] for i in range(REPEAT_NUMBER)]
+print(keys)
 
 #
 # record list_of_rows into a csv called filename
@@ -33,16 +36,22 @@ def on(key):
     # start_time = time.time()
     # print("{0} pressed".format(key), time.perf_counter())
 
-    # if type(key) != str:
-    #     keys.append([str(key)])
-    # else:
-    keys.append((key, time.perf_counter()))
+    global keys, esc_count, REPEAT_NUMBER
+
+    # caps, shift, etc. aren't automatically registered as strings
+    if type(key) == Key:
+        keys[esc_count].append((str(key), time.perf_counter(), "pressed"))
+    else:
+        keys[esc_count].append((key, time.perf_counter(), "pressed"))
 
     if key == Key.esc:
-        print("\n\n", keys, "\n\n")
-        write_to_csv(keys, "typing_data.csv")
-        print("wrote to typing_data.csv")
-        return False
+        esc_count = esc_count + 1
+        print(esc_count)
+        if esc_count >= REPEAT_NUMBER:
+            print("\n\n", keys, "\n\n")
+            write_to_csv(keys, "test_data.csv")
+            print("wrote to test_data.csv")
+            return False
 
 #
 # function called on key release
@@ -51,10 +60,13 @@ def off(key):
     """records an input key into keys list alongside the timestamp when it was released"""
     # print("{0} released".format(key), time.perf_counter())
 
-    # if type(key) != str:
-    #     keys.append([str(key)])
-    # else:
-    keys.append((key, time.perf_counter()))
+    global keys, esc_count
+
+    # caps, shift, etc. aren't automatically registered as strings
+    if type(key) == Key:
+        keys[esc_count].append((str(key), time.perf_counter(), "released"))
+    else:
+        keys[esc_count].append((key, time.perf_counter(), "released"))
 
 # with Listener(on_press=on, on_release=off) as listener:
 #     listener.join()
@@ -62,3 +74,5 @@ def off(key):
 listener = Listener(on_press=on, on_release=off)
 listener.start()
 listener.join()
+
+# .tie5Roanle

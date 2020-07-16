@@ -2,10 +2,10 @@ from pynput.keyboard import Key, Listener
 import time
 import csv
 
-REPEAT_NUMBER = 5
-esc_count = 0
-keys = [[] for i in range(REPEAT_NUMBER)]
-print(keys)
+REPEAT_NUMBER = 2                          # number of times to repeat password entry
+esc_count = 0                               # number of times repeated so far
+keys = [[] for i in range(REPEAT_NUMBER)]   # keep track of which keys have been pressed
+csv_name = "test.csv"                       # name of csv file to save data into
 
 #
 # record list_of_rows into a csv called filename
@@ -22,7 +22,6 @@ def write_to_csv(list_of_rows, filename):
         filewriter = csv.writer(csvfile, delimiter=",")
         for row in list_of_rows:
             filewriter.writerow(row)
-        # filewriter.writerows(list_of_rows)
         csvfile.close()
 
     except:
@@ -36,7 +35,7 @@ def on(key):
     # start_time = time.time()
     # print("{0} pressed".format(key), time.perf_counter())
 
-    global keys, esc_count, REPEAT_NUMBER
+    global keys, esc_count, REPEAT_NUMBER, csv_name
 
     # caps, shift, etc. aren't automatically registered as strings
     if type(key) == Key:
@@ -49,8 +48,8 @@ def on(key):
         print(esc_count)
         if esc_count >= REPEAT_NUMBER:
             print("\n\n", keys, "\n\n")
-            write_to_csv(keys, "test_data.csv")
-            print("wrote to test_data.csv")
+            write_to_csv(keys, csv_name)
+            print("wrote to mummy_data.csv")
             return False
 
 #
@@ -68,11 +67,10 @@ def off(key):
     else:
         keys[esc_count].append((key, time.perf_counter(), "released"))
 
-# with Listener(on_press=on, on_release=off) as listener:
-#     listener.join()
-
+# start listening
 listener = Listener(on_press=on, on_release=off)
 listener.start()
 listener.join()
 
 # .tie5Roanle
+

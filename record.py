@@ -2,10 +2,11 @@ from pynput.keyboard import Key, Listener
 import time
 import csv
 
-REPEAT_NUMBER = 2                          # number of times to repeat password entry
+
+REPEAT_NUMBER = 5   #TODO: change me!       # number of times to repeat password entry
 esc_count = 0                               # number of times repeated so far
 keys = [[] for i in range(REPEAT_NUMBER)]   # keep track of which keys have been pressed
-csv_name = "test.csv"                       # name of csv file to save data into
+csv_name = "julia.csv"                      # name of csv file to save data into
 
 #
 # record list_of_rows into a csv called filename
@@ -32,8 +33,6 @@ def write_to_csv(list_of_rows, filename):
 #
 def on(key):
     """records an input key into keys list alongside the timestamp when it was pressed"""
-    # start_time = time.time()
-    # print("{0} pressed".format(key), time.perf_counter())
 
     global keys, esc_count, REPEAT_NUMBER, csv_name
 
@@ -72,5 +71,4 @@ listener = Listener(on_press=on, on_release=off)
 listener.start()
 listener.join()
 
-# .tie5Roanle
-
+# password: .tie5Roanle
